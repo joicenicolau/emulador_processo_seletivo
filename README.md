@@ -6,17 +6,18 @@ Este projeto é um emulador de um processo seletivo, desenvolvido utilizando o f
 
 O sistema possui as seguintes funcionalidades:
 
-- Recebimento de candidaturas: os candidatos podem se cadastrar informando seu nome através do endpoint `/segundo/processo?nome=nomedocandidato`.
+- Recebimento de candidaturas: os candidatos podem se cadastrar informando seu nome através do endpoint `/api/v1/hiring/start`. Retorna seu codCanditado. 
 
-- Marcar entrevista: é possível marcar uma entrevista para um candidato específico através do endpoint `/segundo/entrevista/{id}`.
+- Marcar entrevista: é possível marcar uma entrevista para um candidato específico(codCandidato) através do endpoint `/api/v1/hiring/schedule`. Retorna o nome do canditado, se passado o seu código corretamente. Caso não o codCandidato não exista retorna uma mensagem de erro.
 
-- Desqualificar candidato: um candidato pode ser desqualificado do processo através do endpoint `/segundo/desqualifica/{id}`.
+- Desqualificar candidato: um candidato específico(codCandidato) pode ser desqualificado do processo através do endpoint `/api/v1/hiring/disqualify`. Retorna o nome do canditado, se passado o seu código corretamente. Caso não o codCandidato não exista retorna uma mensagem de erro.
 
-- Verificar status do candidato: é possível verificar o status de um candidato através do endpoint `/segundo/verificastatus/{id}`.
+- Aprovar candidato: um candidato pode ser aprovado no processo através do endpoint `/api/v1/hiring/approve`. Quando é passado o codCandidato, ele retorna o status HTTP. Se o código passado exitir retorna um status HTTP 200, indicando a aprovação, caso não exista retorna um status HTTP 404.
 
-- Aprovar candidato: um candidato pode ser aprovado no processo através do endpoint `/segundo/aprovar/{id}`.
+- Verificar status do candidato: é possível verificar o status de um candidato através do endpoint `/api/v1/hiring/status/candidate/{id}`. Retorna o status APROVADO, DESQUALIFICADO, RECEBIDO. Caso o id passado seja inexistente retorna uma mensagem. 
 
-- Obter lista de aprovados: é possível obter uma lista com os nomes dos candidatos aprovados através do endpoint `/segundo/aprovados`.
+
+- Obter lista de aprovados: é possível obter uma lista com os nomes dos candidatos aprovados através do endpoint `/api/v1/hiring/approved`.
 
 ## Estrutura do projeto
 
@@ -24,7 +25,7 @@ O projeto possui a seguinte estrutura de diretórios:
 
 - `src/main/java/com/project/processo_seletivo`: Contém os arquivos Java do projeto.
   - `ProcessoSeletivoEmulador.java`: Classe principal do projeto, responsável por iniciar a aplicação Spring Boot.
-  - `Segundo.java`: Controlador REST que define os endpoints e suas respectivas operações.
+  - `ContratacaoController.java`: Controlador REST que define os endpoints e suas respectivas operações.
   - `Candidato.java`: Classe que representa um candidato, contendo informações como nome e status.
   - `Status.java`: Enumeração que define os possíveis status de um candidato.
 
