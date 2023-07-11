@@ -3,16 +3,19 @@ package com.project.processo_seletivo;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
+// import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @SpringBootApplication
 public class ProcessoSeletivoEmulador {
@@ -22,70 +25,73 @@ public class ProcessoSeletivoEmulador {
     }
 
     @RestController
-    @RequestMapping("/segundo")
-    public class Segundo {
+    @RequestMapping("/api/v1/hiring")
+    public class ContratacaoController {
         private Map<Integer, Candidato> candidatos;
         private int nextId;
-        private Scanner scanner;
 
-        public Segundo() {
+        public ContratacaoController() {
             this.candidatos = new HashMap<>();
             this.nextId = 1;
-            this.scanner = new Scanner(System.in);
         }
 
-        @PostMapping("/processo")
-        public int iniciarProcesso() {
-            System.out.print("Digite o nome do candidato: ");
-            String nome = scanner.nextLine();
+        @PostMapping("/start")
+        public Integer iniciarProcesso(@RequestBody Map<String, String> requestBody) {
+            String nome = requestBody.get("nome");
             Candidato candidato = new Candidato(nome);
             candidatos.put(nextId, candidato);
             return nextId++;
         }
 
-        @PostMapping("/entrevista/{id}")
-        public String marcarEntrevista(@PathVariable("id") int codCandidato) {
+        @PostMapping("/schedule")
+        public ResponseEntity<String> marcarEntrevista(@RequestBody Map<String, Integer> requestBody) {
+            int codCandidato = requestBody.get("codCandidato");
             Candidato candidato = getCandidato(codCandidato);
             if (candidato != null) {
                 candidato.setStatus(Status.QUALIFICADO);
-                return candidato.getNome();
+                return ResponseEntity.ok(candidato.getNome());
             }
-            return "Candidato não encontrado";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Candidato não encontrado");
         }
 
-        @PostMapping("/desqualifica/{id}")
-        public String desqualificarCandidato(@PathVariable("id") int codCandidato) {
+        @PostMapping("/disqualify")
+        public ResponseEntity<String> desqualificarCandidato(@RequestBody Map<String, Integer> requestBody) {
+            int codCandidato = requestBody.get("codCandidato");
             Candidato candidato = getCandidato(codCandidato);
             if (candidato != null) {
                 candidato.setStatus(Status.DESQUALIFICADO);
-                return candidato.getNome();
+                 return ResponseEntity.ok(candidato.getNome());
             }
-            return "Candidato desqualificado";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Candidato não encontrado");
         }
 
-        @GetMapping("/verificastatus/{id}")
-        public String verificarStatusCandidato(@PathVariable("id") int codCandidato) {
-            Candidato candidato = getCandidato(codCandidato);
-            if (candidato != null) {
-                return candidato.getStatus().toString();
-            }
-            return "Candidato não encontrado";
-        }
-
-        @PostMapping("/aprovar/{id}")
-        public void aprovarCandidato(@PathVariable("id") int codCandidato) {
+       @PostMapping("/approve")
+        public ResponseEntity<Void> aprovarCandidato(@RequestBody Map<String, Integer> requestBody) {
+            int codCandidato = requestBody.get("codCandidato");
             Candidato candidato = getCandidato(codCandidato);
             if (candidato != null) {
                 candidato.setStatus(Status.APROVADO);
+                return ResponseEntity.ok().build();
             }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        
+        @GetMapping("/status/candidate/{id}")
+        public ResponseEntity<String> verificarStatusCandidato(@PathVariable("id") int codCandidato) {
+            Candidato candidato = getCandidato(codCandidato);
+            if (candidato != null) {
+                return ResponseEntity.ok(candidato.getStatus().toString());
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Candidato não encontrado");
         }
 
-        @GetMapping("/aprovados")
-        public List<String> obterAprovados() {
-            return candidatos.values().stream()
+         @GetMapping("/approved")
+        public ResponseEntity<List<String>> obterAprovados() {
+            List<String> aprovados = candidatos.values().stream()
                     .filter(candidato -> candidato.getStatus() == Status.APROVADO)
                     .map(Candidato::getNome)
                     .collect(Collectors.toList());
+            return ResponseEntity.ok(aprovados);
         }
 
         private Candidato getCandidato(int codCandidato) {
