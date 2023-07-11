@@ -32,8 +32,9 @@ O projeto possui a seguinte estrutura de diretórios:
  - Além das aulas do bootcamp com o Yan, que desde já deixo meus sinceros agradecimentos, pesquisei nos sites:
  - https://medium.com/@andgomes/criando-um-projeto-maven-simples-a2ad88b25e78
  - https://docs.spring.io/spring-boot/docs/current/maven-plugin/reference/htmlsingle/
- - https://www.alura.com.br/artigos/desenvolvendo-aplicacoes-javacode#:~:text=Para%20iniciar%20um%20novo%20projeto,v%C3%A1rias%20op%C3%A7%C3%B5es%20de%20projeto%20Java.]
+ - https://www.alura.com.br/artigos/desenvolvendo-aplicacoes-javacode#:~:text=Para%20iniciar%20um%20novo%20projeto,v%C3%A1rias%20op%C3%A7%C3%B5es%20de%20projeto%20Java
  - https://docs.oracle.com/javase/8/docs/api/java/util/Map.html
  - https://docs.oracle.com/javase/8/docs/api/java/util/Map.html#method.summary
  - https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html
  - https://docs.oracle.com/javase/8/docs/api/java/util/stream/Collectors.html
+ - https://www.baeldung.com/spring-response-entity
